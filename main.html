@@ -6,7 +6,7 @@
     <title> Upload File </title>
     <link rel="stylesheet" href="main.css" />
     <script type="text/javascript"
-            src="upload.js"></script>
+            src="main.js"></script>
   </head>
   <body>
     <div id="wrapper">
@@ -17,6 +17,10 @@
 
     <div id="upload_div">
       <p> Upload a file here </p>
+      <form action="fileupload" method="post" enctype="multipart/form-data">
+        <input type="file" name="filetoupload"><br>
+        <input type="submit">
+      </form>
 
     </div>
 
