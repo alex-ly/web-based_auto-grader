@@ -35,7 +35,7 @@ http.createServer(function (req, res) {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       var oldpath = files.filetoupload.path;
-      var newpath = 'C:/Users/MrE_0/Documents/university/thesis/' + files.filetoupload.name;
+      var newpath = 'C:/Users/MrE_0/Documents/university/thesis/public/'+files.filetoupload.name;
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
         res.write('File uploaded and moved!');
@@ -53,12 +53,12 @@ http.createServer(function (req, res) {
 }).listen(8080);
 
 //read file
-fs.readFile('C:/Users/MrE_0/Documents/university/thesis/', 'utf8', function (err,data) {
-  if (err) {
-    return console.log(err);
-  }
-  console.log(data);
-});
+//fs.readFile('C:/Users/MrE_0/Documents/university/thesis/public/'+file, 'utf8', function (err,data) {
+  //if (err) {
+    //return console.log(err);
+  //}
+  //console.log(data);
+//});
 
 //setup HTTP listener
 app.listen(app.get('port'),function(){
