@@ -34,12 +34,12 @@ app.post("/fileuploadhandle", function(req, res){
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       var oldpath = files.filetoupload.path;
-      var newpath = 'C:/Users/MrE_0/Documents/university/thesis/public/'+files.filetoupload.name;
+      var newpath = 'C:/Users/MrE_0/Documents/university/thesis/uploadedFiles/'+files.filetoupload.name;
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
         res.write('File uploaded and moved!');
         //read file
-        fs.readFile('C:/Users/MrE_0/Documents/university/thesis/public/'+files.filetoupload.name, 'utf8', function (err,data) {
+        fs.readFile('C:/Users/MrE_0/Documents/university/thesis/uploadedFiles/'+files.filetoupload.name, 'utf8', function (err,data) {
           if (err) {
             return console.log(err);
           }
