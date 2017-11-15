@@ -24,18 +24,36 @@ var file=new st.Server('./public');
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 
-
 //routes (map URI ->code)
 app.get('/', function(request,response){
   response.render('main');
 });
 
+// this route handles the incoming file
+app.post('/fileuploadHandler', function(request, response) {
+  var form = new formidable.IncomingForm();
+
+  form.parse(request);
+
+  form.on('fileBegin', function (name, file){
+      file.path = __dirname + '/uploadedFiles/' + file.name;
+  });
+
+  form.on('file', function (name, file){
+      console.log('Uploaded ' + file.name);
+  });
+
+  // TODO: Redirect somewhere
+  //response.sendFile(__dirname + '/index.html');
+});
+
 http.createServer(function (req, res) {
+  /*
   if (req.url == '/fileupload') {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       var oldpath = files.filetoupload.path;
-      var newpath = 'C:/Users/MrE_0/Documents/university/thesis/public/'+files.filetoupload.name;
+      var newpath = 'D:/HonoursThesis2017/AlexLy/web-based_auto-grader/uploadedFiles/' + files.filetoupload.name;
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
         res.write('File uploaded and moved!');
@@ -49,7 +67,7 @@ http.createServer(function (req, res) {
     res.write('<input type="submit">');
     res.write('</form>');
     return res.end();
-  }
+  } */
 }).listen(8080);
 
 //read file
@@ -62,5 +80,5 @@ http.createServer(function (req, res) {
 
 //setup HTTP listener
 app.listen(app.get('port'),function(){
-  console.log('listening on port'+app.get('port'));
+  console.log('listening on port ' + app.get('port'));
 });
