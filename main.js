@@ -6,6 +6,7 @@ var formidable = require('formidable');
 var st = require('node-static');
 var http = require('http');
 var fs = require('fs');
+var path = require('path');
 
 //express setup
 var app=express();
@@ -19,6 +20,7 @@ app.set('port',process.env.PORT || 3000);
 
 var file=new st.Server('./public');
 
+
 // configure view engine
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
@@ -28,18 +30,35 @@ app.get('/', function(request,response){
   response.render('upload');
 });
 
+
+//var uploadForm=document.getElementById('uploadForm');
+//$(document).ready(function(){
+//  var uploadForm = $('#uploadForm');
+
+//});
+
 app.post("/fileuploadhandle", function(req, res){
-  console.log(req.url);
+
   if (req.url == '/fileuploadhandle') {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
-      var oldpath = files.filetoupload.path;
+      //var oldpath = files.filetoupload.path;
+      //console.log(files);
+      var oldpath = __dirname;
+
+      console.log('Old path: '+oldpath);
+
       var newpath = __dirname+'/uploadedFiles/'+files.filetoupload.name;
+      //var newpath = path.join(__dirname+'/uploadedFiles/',files.filetoupload.name);
+
+      console.log('New path:'+newpath);
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
         res.write('File uploaded and moved!');
         //read file
-        fs.readFile(__dirname+"/uploadedFiles/"+files.filetoupload.name, 'utf8', function (err,data) {
+        //fs.readFile(__dirname+"/uploadedFiles/"+files.filetoupload.name, 'utf8', function (err,data) {
+        fs.readFile(newpath, function (err,data) {
+
           if (err) {
             return console.log(err);
           }
@@ -51,10 +70,11 @@ app.post("/fileuploadhandle", function(req, res){
  });
   } else {
     res.writeHead(200, {'Content-Type': 'text/html'});
-    res.write('<form action="fileupload" method="post" enctype="multipart/form-data">');
+    res.write('<form action="fileuploadhandle" method="post" enctype="multipart/form-data">');
     res.write('<input type="file" name="filetoupload"><br>');
     res.write('<input type="submit">');
     res.write('</form>');
+    //res.render('upload');
     return res.end();
   }
 });
