@@ -36,9 +36,9 @@ app.post("/fileuploadhandle", function(req, res){
   if (req.url == '/fileuploadhandle') {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
-      //var oldpath = files.filetoupload.path;
+      var oldpath = files.filetoupload.path;
       //console.log(files);
-      var oldpath = __dirname;
+      //var oldpath = __dirname;
 
       console.log('Old path: '+oldpath);
 
