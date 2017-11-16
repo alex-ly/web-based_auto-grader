@@ -31,12 +31,6 @@ app.get('/', function(request,response){
 });
 
 
-//var uploadForm=document.getElementById('uploadForm');
-//$(document).ready(function(){
-//  var uploadForm = $('#uploadForm');
-
-//});
-
 app.post("/fileuploadhandle", function(req, res){
 
   if (req.url == '/fileuploadhandle') {
@@ -51,7 +45,7 @@ app.post("/fileuploadhandle", function(req, res){
       var newpath = __dirname+'/uploadedFiles/'+files.filetoupload.name;
       //var newpath = path.join(__dirname+'/uploadedFiles/',files.filetoupload.name);
 
-      console.log('New path:'+newpath);
+      console.log('New path: '+newpath);
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
         res.write('File uploaded and moved!');
