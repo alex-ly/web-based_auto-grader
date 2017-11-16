@@ -38,7 +38,7 @@ app.post("/fileuploadhandle", function(req, res){
     form.parse(req, function (err, fields, files) {
       var oldpath = files.filetoupload.path;
       //console.log(files);
-      //var oldpath = __dirname;
+      //svar oldpath = __dirname;
 
       console.log('Old path: '+oldpath);
 
@@ -51,7 +51,7 @@ app.post("/fileuploadhandle", function(req, res){
         res.write('File uploaded and moved!');
         //read file
         //fs.readFile(__dirname+"/uploadedFiles/"+files.filetoupload.name, 'utf8', function (err,data) {
-        fs.readFile(newpath, function (err,data) {
+        fs.readFile(newpath,'utf8', function (err,data) {
 
           if (err) {
             return console.log(err);
