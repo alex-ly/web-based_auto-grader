@@ -7,6 +7,7 @@ var st = require('node-static');
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
+var uuid=require('node-uuid');
 
 //express setup
 var app=express();
@@ -42,7 +43,7 @@ app.post("/fileuploadhandle", function(req, res){
 
       console.log('Old path: '+oldpath);
 
-      var newpath = __dirname+'/uploadedFiles/'+files.filetoupload.name;
+      var newpath = __dirname+'/uploadedFiles/'+uuid.v4()+'.py';
       //var newpath = path.join(__dirname+'/uploadedFiles/',files.filetoupload.name);
 
       console.log('New path: '+newpath);
