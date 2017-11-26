@@ -5,9 +5,17 @@ var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var st = require('node-static');
 var http = require('http');
+
+//for saving the uploaded files
 var fs = require('fs');
 var path = require('path');
+
+//generate unique filenames
 var uuid=require('node-uuid');
+
+//communication with docker
+var Docker = require('dockerode');
+var docker = new Docker({protocol: 'http', host: 'localhost', port: 3000});
 
 //express setup
 var app=express();
@@ -20,7 +28,6 @@ app.use(express.static('public'));
 app.set('port',process.env.PORT || 3000);
 
 var file=new st.Server('./public');
-
 
 // configure view engine
 app.set('views', __dirname + '/views');
@@ -36,22 +43,18 @@ app.post("/fileuploadhandle", function(req, res){
 
   if (req.url == '/fileuploadhandle') {
     var form = new formidable.IncomingForm();
+    var filename=uuid.v4();
     form.parse(req, function (err, fields, files) {
       var oldpath = files.filetoupload.path;
-      //console.log(files);
-      //svar oldpath = __dirname;
 
       console.log('Old path: '+oldpath);
 
-      var newpath = __dirname+'/uploadedFiles/'+uuid.v4()+'.py';
-      //var newpath = path.join(__dirname+'/uploadedFiles/',files.filetoupload.name);
+      var newpath = __dirname+'/uploadedFiles/'+filename+'.py';
 
       console.log('New path: '+newpath);
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
         res.write('File uploaded and moved!');
-        //read file
-        //fs.readFile(__dirname+"/uploadedFiles/"+files.filetoupload.name, 'utf8', function (err,data) {
         fs.readFile(newpath,'utf8', function (err,data) {
 
           if (err) {
@@ -60,8 +63,31 @@ app.post("/fileuploadhandle", function(req, res){
           console.log(data);
         });
 
+        // create docker container
+
+        docker.createContainer({Image: 'python', Cmd: ['python', 'uploadedFiles/'+filename+'.py'], name: 'python-test'}, function (err, container) {
+          //container.start(function (err, data) {
+          //  console.log(data);
+          //});
+        });
+
+
+        //var container=docker.getContainer('test');
+        //
+        docker.run('python', ['python', 'uploadedFiles/'+filename+'.py'], process.stdout, function(err, data, container){
+          console.log(data);
+        });
+
+        // TODO: share uploaded file with docker
+
+
+        //run the uploaded file from docker container
+
         res.end();
+
       });
+
+
  });
   } else {
     res.writeHead(200, {'Content-Type': 'text/html'});
@@ -74,9 +100,6 @@ app.post("/fileuploadhandle", function(req, res){
   }
 });
 
-//http.createServer(function (req, res) {
-
-//}).listen(8080);
 
 
 //setup HTTP listener
