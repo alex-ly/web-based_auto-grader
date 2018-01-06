@@ -15,7 +15,8 @@ var uuid=require('node-uuid');
 
 //communication with docker
 var Docker = require('dockerode');
-var docker = new Docker({protocol: 'http', host: 'localhost', port: 3000});
+//var docker = new Docker({protocol: 'http', host: 'localhost', port: 3000});
+var docker = new Docker();
 
 //express setup
 var app=express();
@@ -38,6 +39,25 @@ app.get('/', function(request,response){
   response.render('upload');
 });
 
+function runExec(container, filename){
+  var options={
+    Cmd:['bash', '-c', 'python '+__dirname +'/uploadedFiles/'+filename+'.py'],
+    AttachStdout: true,
+    AttachStderr: true
+  };
+
+  container.exec(options, function(err, exec){
+    //console.log('Error: '+err);
+    if (err) return;
+    exec.start(function(err, stream){
+      container.modem.demuxStream(stream, process.stdout, process.stderr);
+      exec.inspect(function(err, data){
+        console.log(data);
+      });
+    });
+  });
+
+}
 
 app.post("/fileuploadhandle", function(req, res){
 
@@ -55,6 +75,7 @@ app.post("/fileuploadhandle", function(req, res){
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
         res.write('File uploaded and moved!');
+        //read file
         fs.readFile(newpath,'utf8', function (err,data) {
 
           if (err) {
@@ -65,18 +86,28 @@ app.post("/fileuploadhandle", function(req, res){
 
         // create docker container
 
-        docker.createContainer({Image: 'python', Cmd: ['python', 'uploadedFiles/'+filename+'.py'], name: 'python-test'}, function (err, container) {
-          //container.start(function (err, data) {
-          //  console.log(data);
-          //});
+        //docker.createContainer({Image: 'python', Cmd: ['~/Windows/WinSxS/amd64_microsoft-windows-lxss-bash_31bf3856ad364e35_10.0.16299.15_none_62878a822db68b25/bash'], name: 'python-test'}, function (err, container) {
+
+        //var container=docker.getContainer('8997365d2511');
+        //container.start(function (err, data) {
+        //  console.log(data);
+        //});
+
+        docker.createContainer({Image: 'test', Cmd: ['bin/bash'], name: '899'}, function (err, container) {
+          console.log('Error: '+err);
+          container.start(function (err, data) {
+            console.log('Accessed container: '+container.id);
+            console.log('Data: '+data);
+            runExec(container, filename);
+          });
         });
 
 
         //var container=docker.getContainer('test');
         //
-        docker.run('python', ['python', 'uploadedFiles/'+filename+'.py'], process.stdout, function(err, data, container){
-          console.log(data);
-        });
+        //docker.run('python', ['python', 'uploadedFiles/'+filename+'.py'], process.stdout, function(err, data, container){
+          //console.log(data);
+        //});
 
         // TODO: share uploaded file with docker
 
