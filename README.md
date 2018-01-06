@@ -9,6 +9,20 @@ formidable
 
 pug
 
+dockerode
+
+fs
+
+path
+
+node-static
+
+node-uuid
+
+body-parser
+
+http
+
 Then, run "node main.js" in the node command prompt.
 
 Open up an Internet browser and enter "localhost:3000" into the URL.
