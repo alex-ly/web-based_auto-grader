@@ -48,6 +48,7 @@ function runExec(container, filename){
 
   container.exec(options, function(err, exec){
     //console.log('Error: '+err);
+    console.log(exec);
     if (err) return;
     exec.start(function(err, stream){
       container.modem.demuxStream(stream, process.stdout, process.stderr);
@@ -93,12 +94,14 @@ app.post("/fileuploadhandle", function(req, res){
         //  console.log(data);
         //});
 
-        docker.createContainer({Image: 'test', Cmd: ['bin/bash'], name: '899'}, function (err, container) {
+        docker.createContainer({Image: 'test', Cmd: ['/usr/local/bin/python', '/data/'+ filename+'.py'], name: '07d'}, function (err, container) {
           console.log('Error: '+err);
+          console.log('Command: '+Cmd);
           container.start(function (err, data) {
             console.log('Accessed container: '+container.id);
+            console.log('Error: '+err);
             console.log('Data: '+data);
-            runExec(container, filename);
+            //runExec(container, filename);
           });
         });
 
