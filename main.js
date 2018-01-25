@@ -93,10 +93,11 @@ app.post("/fileuploadhandle", function(req, res){
         //container.start(function (err, data) {
         //  console.log(data);
         //});
+        var runProgramCommand = ['/usr/local/bin/python', '/data/'+ filename+'.py'];
 
-        docker.createContainer({Image: 'test', Cmd: ['/usr/local/bin/python', '/data/'+ filename+'.py'], name: '07d'}, function (err, container) {
+        docker.createContainer({Image: 'test', Cmd: runProgramCommand, name: '07d'}, function (err, container) {
           console.log('Error: '+err);
-          console.log('Command: '+Cmd);
+          console.log('Command: '+runProgramCommand.join(' '));
           container.start(function (err, data) {
             console.log('Accessed container: '+container.id);
             console.log('Error: '+err);
