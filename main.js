@@ -93,7 +93,8 @@ app.post("/fileuploadhandle", function(req, res){
         //container.start(function (err, data) {
         //  console.log(data);
         //});
-        var runProgramCommand = ['/usr/local/bin/python', '/data/'+ filename+'.py'];
+        var runProgramCommand = ['/usr/local/bin/python', '/data/'+ filename+'.py >/tmp/program_output.txt 2>/tmp/program_error.txt'];
+        //var runProgramCommand=['/bin/bash', '-c', '/usr/local/bin/python /data/'+filename+'.py'];
 
         docker.createContainer({Image: 'test', Cmd: runProgramCommand, name: '07d'}, function (err, container) {
           console.log('Error: '+err);
