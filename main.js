@@ -87,25 +87,52 @@ app.post("/fileuploadhandle", function(req, res){
 
         // create docker container
 
-        //docker.createContainer({Image: 'python', Cmd: ['~/Windows/WinSxS/amd64_microsoft-windows-lxss-bash_31bf3856ad364e35_10.0.16299.15_none_62878a822db68b25/bash'], name: 'python-test'}, function (err, container) {
+        //var runProgramCommand = ['/usr/local/bin/python', '/data/'+ filename+'.py >/tmp/program_output.txt 2>/tmp/program_error.txt'];
+        //var runProgramCommand=['/bin/bash', '-c', '/usr/local/bin/python', '/data/'+filename+'.py'];
+        //var runProgramCommand=['python', '/data/'+filename+'.py'];
+        var runProgramCommand=['bash'];
 
-        //var container=docker.getContainer('8997365d2511');
-        //container.start(function (err, data) {
-        //  console.log(data);
-        //});
-        var runProgramCommand = ['/usr/local/bin/python', '/data/'+ filename+'.py >/tmp/program_output.txt 2>/tmp/program_error.txt'];
-        //var runProgramCommand=['/bin/bash', '-c', '/usr/local/bin/python /data/'+filename+'.py'];
 
-        docker.createContainer({Image: 'test', Cmd: runProgramCommand, name: '07d'}, function (err, container) {
+
+        //docker.createContainer({Image: 'test', Cmd: runProgramCommand, name: '07d'}, function (err, container) {
+        /*docker.createContainer({Image: 'test', AttachStdin: true, AttachStdout: true, AttachStderr: true,Tty: true,Cmd: runProgramCommand}, function (err, container) {
+
           console.log('Error: '+err);
           console.log('Command: '+runProgramCommand.join(' '));
           container.start(function (err, data) {
             console.log('Accessed container: '+container.id);
             console.log('Error: '+err);
-            console.log('Data: '+data);
+            //console.log('Data: '+data);
             //runExec(container, filename);
           });
         });
+        */
+
+        var createOptions = {
+          Tty: false,
+          'Binds': ['/c/Users/MrE_0/Documents/university/thesis/uploadedFiles:/data']
+        };
+        var command = ['/usr/local/bin/python', '/data/'+filename+'.py'];
+        docker.run('test', command, process.stdout, createOptions, function(err, data, container) {
+          if (err) {
+            console.log('Error:', err);
+          }
+          console.log('Command: ', command.join(' '));
+          console.log('Data: ', data);
+          console.log('Started container ', container.id);
+
+          command = ['/usr/local/bin/python', '/data/hello-world.py']
+          docker.run('test', command, process.stdout, createOptions, function(err, data, container) {
+            if (err) {
+              console.log('Error:', err);
+            }
+            console.log('Command: ', command.join(' '));
+            console.log('Data: ', data);
+            console.log('Started container ', container.id);
+          });
+
+        });
+
 
 
         //var container=docker.getContainer('test');
