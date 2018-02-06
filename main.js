@@ -21,6 +21,13 @@ var docker = new Docker();
 //express setup
 var app=express();
 
+var Writable = require('stream').Writable;
+var actualStream = new Writable();
+var expectedStream = new Writable();
+
+var actual_output = '';
+var expected_output='';
+
 // body parser (parses URL-encoded body content)
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -39,7 +46,7 @@ app.get('/', function(request,response){
   response.render('upload');
 });
 
-function runExec(container, filename){
+/*function runExec(container, filename){
   var options={
     Cmd:['bash', '-c', 'python '+__dirname +'/uploadedFiles/'+filename+'.py'],
     AttachStdout: true,
@@ -58,7 +65,7 @@ function runExec(container, filename){
     });
   });
 
-}
+}*/
 
 app.post("/fileuploadhandle", function(req, res){
 
@@ -87,64 +94,87 @@ app.post("/fileuploadhandle", function(req, res){
 
         // create docker container
 
-        //var runProgramCommand = ['/usr/local/bin/python', '/data/'+ filename+'.py >/tmp/program_output.txt 2>/tmp/program_error.txt'];
-        //var runProgramCommand=['/bin/bash', '-c', '/usr/local/bin/python', '/data/'+filename+'.py'];
-        //var runProgramCommand=['python', '/data/'+filename+'.py'];
-        var runProgramCommand=['bash'];
-
-
-
-        //docker.createContainer({Image: 'test', Cmd: runProgramCommand, name: '07d'}, function (err, container) {
-        /*docker.createContainer({Image: 'test', AttachStdin: true, AttachStdout: true, AttachStderr: true,Tty: true,Cmd: runProgramCommand}, function (err, container) {
-
-          console.log('Error: '+err);
-          console.log('Command: '+runProgramCommand.join(' '));
-          container.start(function (err, data) {
-            console.log('Accessed container: '+container.id);
-            console.log('Error: '+err);
-            //console.log('Data: '+data);
-            //runExec(container, filename);
-          });
-        });
-        */
-
         var createOptions = {
           Tty: false,
           'Binds': ['/c/Users/MrE_0/Documents/university/thesis/uploadedFiles:/data']
         };
-        var command = ['/usr/local/bin/python', '/data/'+filename+'.py'];
-        docker.run('test', command, process.stdout, createOptions, function(err, data, container) {
-          if (err) {
-            console.log('Error:', err);
-          }
-          console.log('Command: ', command.join(' '));
-          console.log('Data: ', data);
-          console.log('Started container ', container.id);
 
-          command = ['/usr/local/bin/python', '/data/hello-world.py']
-          docker.run('test', command, process.stdout, createOptions, function(err, data, container) {
-            if (err) {
-              console.log('Error:', err);
+        //run uploaded file
+        //var command = ['/usr/local/bin/python', '/data/'+filename+'.py'];
+        //var command = ['/usr/local/bin/python', '/data/'+filename+'.py'];//,'>actual_output.txt'];
+
+        actualStream._write = function write(doc, encoding, next) {
+          var StringDecoder = require('string_decoder').StringDecoder;
+          var decoder = new StringDecoder('utf8');
+          var result = decoder.write(doc);
+          actual_output += result;
+          next()
+          // resolve(result);  // Moved the resolve to the handler, which fires at the end of the stream
+        };
+        expectedStream._write = function write(doc, encoding, next) {
+          var StringDecoder = require('string_decoder').StringDecoder;
+          var decoder = new StringDecoder('utf8');
+          var result = decoder.write(doc);
+          expected_output += result;
+          next()
+          // resolve(result);  // Moved the resolve to the handler, which fires at the end of the stream
+        };
+        docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions).then(function(error, data){
+          console.log('Actual output: '+actual_output);
+
+          docker.run('test', ['/usr/local/bin/python', '/data/hello-world.py'], expectedStream, createOptions).then(function(error, data){
+            console.log('Expected output: '+expected_output);
+            if(actual_output!=expected_output){
+              console.log('Outputs are not the same');
+            }else{
+              console.log('Outputs are the same');
             }
-            console.log('Command: ', command.join(' '));
-            console.log('Data: ', data);
-            console.log('Started container ', container.id);
+            return container.remove();
           });
+          return container.remove();
+
 
         });
 
 
+        /*
 
-        //var container=docker.getContainer('test');
-        //
-        //docker.run('python', ['python', 'uploadedFiles/'+filename+'.py'], process.stdout, function(err, data, container){
-          //console.log(data);
-        //});
+        docker.run('test', command, process.stdout, createOptions, function(err, data, container) {
+          if (err) {
+            console.log('Error:', err);
+          }
+          //console.log(process.stdout);
 
-        // TODO: share uploaded file with docker
+          console.log('Command: ', command.join(' '));
+          console.log('Data: ', data);
+          console.log('Started container ', container.id);
 
+          //run master program
+          //command = ['/usr/local/bin/python', '/data/hello-world.py'];
+          command = ['/usr/local/bin/python', '/data/hello-world.py','>/data/expected_output.txt'];
+          //command=[];
+          docker.run('test', command, process.stdout, createOptions, function(err, data, container) {
+            if (err) {
+              console.log('Error:', err);
+            }
+            //console.log(process.stdout);
+            console.log('Command: ', command.join(' '));
+            console.log('Data: ', data);
+            console.log('Started container ', container.id);
 
-        //run the uploaded file from docker container
+            fs.readFile('/data/expected_output.txt','utf8',function(err,data){
+              console.log(data);
+            });
+
+            fs.readFile('actual_output.txt','utf8',function(err,data){
+              console.log(data);
+            });
+            return container.remove();
+          });
+          return container.remove();
+
+        });
+        */
 
         res.end();
 
