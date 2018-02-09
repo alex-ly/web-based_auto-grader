@@ -119,24 +119,53 @@ app.post("/fileuploadhandle", function(req, res){
           next()
           // resolve(result);  // Moved the resolve to the handler, which fires at the end of the stream
         };
-        docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions).then(function(error, data){
+
+        function handler(error, data, container) {
+          if (error) {
+            console.log({ 'status': 'error', 'message': error });
+            reject(error)
+          }
+          //resolve(output);
+          //return output;
+        };
+
+        /*
+
+        docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions, function(error, data, container){
           console.log('Actual output: '+actual_output);
 
-          docker.run('test', ['/usr/local/bin/python', '/data/hello-world.py'], expectedStream, createOptions).then(function(error, data){
+          docker.run('test', ['/usr/local/bin/python', '/data/hello-world.py'], expectedStream, createOptions, function(error, data, container){
             console.log('Expected output: '+expected_output);
+            var msg;
             if(actual_output!=expected_output){
-              console.log('Outputs are not the same');
+              msg='Outputs are not the same';
             }else{
-              console.log('Outputs are the same');
+              msg='Outputs are the same';
             }
-            return container.remove();
+
+            res.render('feedback', { Output: actual_output, Message: msg });
+            return res.end();
+
+            //return container.remove();
           });
-          return container.remove();
+          //return container.remove();
 
+        });*/
 
-        });
+        docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions, handler);
+        docker.run('test', ['/usr/local/bin/python', '/data/hello-world.py'], expectedStream, createOptions, handler);
+        console.log('Actual output: '+actual_output);
+        
+        console.log('Expected output: '+expected_output);
+        var msg;
+        if(actual_output!=expected_output){
+          msg='Outputs are not the same';
+        }else{
+          msg='Outputs are the same';
+        }
 
-
+        res.render('feedback', { Output: actual_output, Message: msg });
+        return res.end();
         /*
 
         docker.run('test', command, process.stdout, createOptions, function(err, data, container) {
@@ -176,12 +205,12 @@ app.post("/fileuploadhandle", function(req, res){
         });
         */
 
-        res.end();
+        //res.end();
 
       });
 
 
- });
+    });
   } else {
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.write('<form action="fileuploadhandle" method="post" enctype="multipart/form-data">');
@@ -191,6 +220,7 @@ app.post("/fileuploadhandle", function(req, res){
     //res.render('upload');
     return res.end();
   }
+
 });
 
 
