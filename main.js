@@ -82,7 +82,7 @@ app.post("/fileuploadhandle", function(req, res){
       console.log('New path: '+newpath);
       fs.rename(oldpath, newpath, function (err) {
         if (err) throw err;
-        res.write('File uploaded and moved!');
+        //res.write('File uploaded and moved!');
         //read file
         fs.readFile(newpath,'utf8', function (err,data) {
 
@@ -129,7 +129,7 @@ app.post("/fileuploadhandle", function(req, res){
           //return output;
         };
 
-        /*
+
 
         docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions, function(error, data, container){
           console.log('Actual output: '+actual_output);
@@ -142,6 +142,7 @@ app.post("/fileuploadhandle", function(req, res){
             }else{
               msg='Outputs are the same';
             }
+            //res.writeHead(200);
 
             res.render('feedback', { Output: actual_output, Message: msg });
             return res.end();
@@ -150,25 +151,25 @@ app.post("/fileuploadhandle", function(req, res){
           });
           //return container.remove();
 
-        });*/
+        });
 
-        docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions, handler);
+        /*docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions, handler);
         docker.run('test', ['/usr/local/bin/python', '/data/hello-world.py'], expectedStream, createOptions, handler);
         console.log('Actual output: '+actual_output);
-        
+
         console.log('Expected output: '+expected_output);
         var msg;
         if(actual_output!=expected_output){
           msg='Outputs are not the same';
         }else{
           msg='Outputs are the same';
-        }
+        }*/
 
-        res.render('feedback', { Output: actual_output, Message: msg });
-        return res.end();
+        //res.render('feedback', { Output: actual_output, Message: msg });
+        //return res.end();
         /*
 
-        docker.run('test', command, process.stdout, createOptions, function(err, data, container) {
+        docker.run('test', command, actualStream, createOptions, function(err, data, container) {
           if (err) {
             console.log('Error:', err);
           }
@@ -222,7 +223,6 @@ app.post("/fileuploadhandle", function(req, res){
   }
 
 });
-
 
 
 //setup HTTP listener
