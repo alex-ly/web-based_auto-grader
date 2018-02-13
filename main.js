@@ -95,7 +95,7 @@ app.post("/fileuploadhandle", function(req, res){
         // create docker container
 
         var createOptions = {
-          Tty: false,
+          Tty: true,
           'Binds': ['/c/Users/MrE_0/Documents/university/thesis/uploadedFiles:/data']
         };
 
@@ -129,8 +129,6 @@ app.post("/fileuploadhandle", function(req, res){
           //return output;
         };
 
-
-
         docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions, function(error, data, container){
           console.log('Actual output: '+actual_output);
 
@@ -144,7 +142,7 @@ app.post("/fileuploadhandle", function(req, res){
             }
             //res.writeHead(200);
 
-            res.render('feedback', { Output: actual_output, Message: msg });
+            res.render('feedback', { Output: 'Your code output: '+actual_output, Message: msg });
             return res.end();
 
             //return container.remove();
