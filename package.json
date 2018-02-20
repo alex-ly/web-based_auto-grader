@@ -9,6 +9,7 @@
   "dependencies": {
     "dockerode": "^2.5.3",
     "express": "^4.16.2",
+    "formidable": "^1.1.1",
     "node-static": "^0.7.10",
     "node-uuid": "^1.4.8",
     "stream": "0.0.2",
