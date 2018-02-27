@@ -3,13 +3,31 @@ html(lang="en")
   head
     meta(charset="utf-8")
     meta(name="viewpoint" content="width=device-width, initial-scale=1")
+    script(src="../ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8")
     title  Feedback
     link(rel="stylesheet" href="main.css")
   body
     #wrapper
       header
         h1 Feedback
+
+    #editor
+    //| function foo(items){
+    //| var x = Code;
+    //| return x;
+    //| }
+
+    p= Code
+
     div
-      p=  Output
+      p= Actual_output
     div
-      p=  Message
+      p= Expected_output
+    div
+      p= Message
+
+    //script(src="../ace-builds-master/src-noconflict/ace.js" type="text/javascript" charset="utf-8")
+    script.
+      var editor = ace.edit("editor");
+      editor.setTheme("../ace-master/lib/ace/theme/monokai");
+      editor.session.setMode("../ace-master/lib/ace/mode/javascript");
