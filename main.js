@@ -27,6 +27,7 @@ var expectedStream = new Writable();
 
 var actual_output = '';
 var expected_output='';
+var actual_code='';
 
 // body parser (parses URL-encoded body content)
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -46,26 +47,6 @@ app.get('/', function(request,response){
   response.render('upload');
 });
 
-/*function runExec(container, filename){
-  var options={
-    Cmd:['bash', '-c', 'python '+__dirname +'/uploadedFiles/'+filename+'.py'],
-    AttachStdout: true,
-    AttachStderr: true
-  };
-
-  container.exec(options, function(err, exec){
-    //console.log('Error: '+err);
-    console.log(exec);
-    if (err) return;
-    exec.start(function(err, stream){
-      container.modem.demuxStream(stream, process.stdout, process.stderr);
-      exec.inspect(function(err, data){
-        console.log(data);
-      });
-    });
-  });
-
-}*/
 
 app.post("/fileuploadhandle", function(req, res){
 
@@ -90,18 +71,17 @@ app.post("/fileuploadhandle", function(req, res){
             return console.log(err);
           }
           console.log(data);
+          actual_code+=data;
         });
 
         // create docker container
 
         var createOptions = {
           Tty: true,
-          'Binds': ['/c/Users/MrE_0/Documents/university/thesis/uploadedFiles:/data']
+          'Binds': ['/c/Users/MrE_0/Documents/university/web-based_auto-grader-master/uploadedFiles:/data']
         };
 
         //run uploaded file
-        //var command = ['/usr/local/bin/python', '/data/'+filename+'.py'];
-        //var command = ['/usr/local/bin/python', '/data/'+filename+'.py'];//,'>actual_output.txt'];
 
         actualStream._write = function write(doc, encoding, next) {
           var StringDecoder = require('string_decoder').StringDecoder;
@@ -142,8 +122,9 @@ app.post("/fileuploadhandle", function(req, res){
             }
             //res.writeHead(200);
 
-            res.render('feedback', { Output: 'Your code output: '+actual_output, Message: msg });
+            res.render('feedback', { Actual_output: 'Your code output: '+actual_output, Message: msg, Expected_output: 'Expected code output: '+expected_output, Code: 'Your code:\n'+actual_code });
             return res.end();
+
 
             //return container.remove();
           });
@@ -151,60 +132,6 @@ app.post("/fileuploadhandle", function(req, res){
 
         });
 
-        /*docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions, handler);
-        docker.run('test', ['/usr/local/bin/python', '/data/hello-world.py'], expectedStream, createOptions, handler);
-        console.log('Actual output: '+actual_output);
-
-        console.log('Expected output: '+expected_output);
-        var msg;
-        if(actual_output!=expected_output){
-          msg='Outputs are not the same';
-        }else{
-          msg='Outputs are the same';
-        }*/
-
-        //res.render('feedback', { Output: actual_output, Message: msg });
-        //return res.end();
-        /*
-
-        docker.run('test', command, actualStream, createOptions, function(err, data, container) {
-          if (err) {
-            console.log('Error:', err);
-          }
-          //console.log(process.stdout);
-
-          console.log('Command: ', command.join(' '));
-          console.log('Data: ', data);
-          console.log('Started container ', container.id);
-
-          //run master program
-          //command = ['/usr/local/bin/python', '/data/hello-world.py'];
-          command = ['/usr/local/bin/python', '/data/hello-world.py','>/data/expected_output.txt'];
-          //command=[];
-          docker.run('test', command, process.stdout, createOptions, function(err, data, container) {
-            if (err) {
-              console.log('Error:', err);
-            }
-            //console.log(process.stdout);
-            console.log('Command: ', command.join(' '));
-            console.log('Data: ', data);
-            console.log('Started container ', container.id);
-
-            fs.readFile('/data/expected_output.txt','utf8',function(err,data){
-              console.log(data);
-            });
-
-            fs.readFile('actual_output.txt','utf8',function(err,data){
-              console.log(data);
-            });
-            return container.remove();
-          });
-          return container.remove();
-
-        });
-        */
-
-        //res.end();
 
       });
 
