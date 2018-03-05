@@ -58,7 +58,12 @@ var User = mongoose.model('User', userSchema);
 
 var ta= new User({role: 'marker'});
 var student =new User({role: 'student'});
-
+ta.save(function(error){
+  if(error) console.log('Addition error');
+});
+student.save(function(error){
+  if(error) console.log('Addition error');
+});
 //assignment
 var assignmentSchema = new Schema({
 	title: String,
@@ -68,6 +73,11 @@ var assignmentSchema = new Schema({
   weight: Number
 }, {collection: 'Assignment'});
 var Assignment = mongoose.model('Assignment', assignmentSchema);
+
+var assignment1=new Assignment({title: 'Assignment 1', desc: 'blah', weight: 10});
+assignment1.save(function(error){
+  if(error) console.log('Addition error');
+});
 
 //submission
 var submissionSchema = new Schema({
@@ -108,6 +118,11 @@ app.post("/fileuploadhandle", function(req, res){
     var form = new formidable.IncomingForm();
     var filename=uuid.v4();
     form.parse(req, function (err, fields, files) {
+      var submission1=new Submission({assignment: assignment1.id, student: student.id});
+      submission1.save(function(error){
+        if(error) console.log('Addition error');
+      });
+
       var oldpath = files.filetoupload.path;
 
       console.log('Old path: '+oldpath);
@@ -171,9 +186,15 @@ app.post("/fileuploadhandle", function(req, res){
             var msg;
             if(actual_output!=expected_output){
               msg='Outputs are not the same';
+              var mark=new Mark({assignment: assignment1.id, marker: ta.id, score: 0});
             }else{
               msg='Outputs are the same';
+              var mark=new Mark({assignment: assignment1.id, marker: ta.id, score: 1});
             }
+            mark.save(function(error){
+              if(error) console.log('Addition error');
+            });
+            console.log(mark.score);
             //res.writeHead(200);
 
             res.render('feedback', { Actual_output: 'Your code output: '+actual_output, Message: msg, Expected_output: 'Expected code output: '+expected_output, Code: actual_code });
