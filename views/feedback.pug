@@ -3,7 +3,8 @@ html(lang="en")
   head
     meta(charset="utf-8")
     meta(name="viewpoint" content="width=device-width, initial-scale=1")
-    script(src="../ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8")
+    //script(src="../ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8")
+    script(src="../feedback.js" type="text/javascript")
     title  Feedback
     link(rel="stylesheet" href="main.css")
   body
@@ -11,13 +12,13 @@ html(lang="en")
       header
         h1 Feedback
 
-    #editor
+    div#editor//=Code
     //| function foo(items){
     //| var x = Code;
     //| return x;
     //| }
 
-    p= Code
+      p= Code
 
     div
       p= Actual_output
@@ -26,8 +27,8 @@ html(lang="en")
     div
       p= Message
 
-    //script(src="../ace-builds-master/src-noconflict/ace.js" type="text/javascript" charset="utf-8")
-    script.
-      var editor = ace.edit("editor");
-      editor.setTheme("../ace-master/lib/ace/theme/monokai");
-      editor.session.setMode("../ace-master/lib/ace/mode/javascript");
+    script(src="../ace-builds-master/src-noconflict/ace.js" type="text/javascript" charset="utf-8")
+    //script.
+    //  var editor = ace.edit("editor");
+    //  editor.setTheme("../ace-master/lib/ace/theme/monokai");
+    //  editor.session.setMode("../ace-master/lib/ace/mode/javascript");
