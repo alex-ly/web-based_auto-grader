@@ -21,6 +21,10 @@ var docker = new Docker();
 //express setup
 var app=express();
 
+//database setup
+var mongoose=require('mongoose');
+
+
 var Writable = require('stream').Writable;
 var actualStream = new Writable();
 var expectedStream = new Writable();
@@ -42,11 +46,61 @@ var file=new st.Server('./public');
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 
+mongoose.connect('localhost:27017/');
+
+var Schema = mongoose.Schema;
+
+//user profile
+var userSchema = new Schema({
+	role: String
+}, {collection: 'User'});
+var User = mongoose.model('User', userSchema);
+
+var ta= new User({role: 'marker'});
+var student =new User({role: 'student'});
+
+//assignment
+var assignmentSchema = new Schema({
+	title: String,
+  desc: String,
+  mark: Number,
+  dueDate: Date,
+  weight: Number
+}, {collection: 'Assignment'});
+var Assignment = mongoose.model('Assignment', assignmentSchema);
+
+//submission
+var submissionSchema = new Schema({
+	assignment: {
+    type: Schema.Types.ObjectId,
+    ref: 'Assignment'
+  },
+  student: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }
+}, {collection: 'Submission'});
+var Submission = mongoose.model('Submission', submissionSchema);
+
+//mark
+var markSchema = new Schema({
+	assignment: {
+    type: Schema.Types.ObjectId,
+    ref: 'Assignment'
+  },
+  marker: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  score: Number,
+  comment: String
+}, {collection: 'Mark'});
+var Mark = mongoose.model('Mark', markSchema);
+
 //routes (map URI ->code)
 app.get('/', function(request,response){
   response.render('upload');
 });
-
 
 app.post("/fileuploadhandle", function(req, res){
 
@@ -122,7 +176,7 @@ app.post("/fileuploadhandle", function(req, res){
             }
             //res.writeHead(200);
 
-            res.render('feedback', { Actual_output: 'Your code output: '+actual_output, Message: msg, Expected_output: 'Expected code output: '+expected_output, Code: 'Your code:\n'+actual_code });
+            res.render('feedback', { Actual_output: 'Your code output: '+actual_output, Message: msg, Expected_output: 'Expected code output: '+expected_output, Code: actual_code });
             return res.end();
 
 
