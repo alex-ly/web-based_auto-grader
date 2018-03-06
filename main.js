@@ -139,72 +139,71 @@ app.post("/fileuploadhandle", function(req, res){
           if (err) {
             return console.log(err);
           }
-          console.log(data);
+          console.log('*****' + data + '*****');
           actual_code+=data;
+
+					// run the program in docker
+					// create docker container
+
+					var createOptions = {
+						Tty: true,
+						'Binds': ['/c/Users/MrE_0/Documents/university/web-based_auto-grader-master/uploadedFiles:/data']
+					};
+
+					//run uploaded file
+
+					actualStream._write = function write(doc, encoding, next) {
+						var StringDecoder = require('string_decoder').StringDecoder;
+						var decoder = new StringDecoder('utf8');
+						var result = decoder.write(doc);
+						actual_output += result;
+						next()
+						// resolve(result);  // Moved the resolve to the handler, which fires at the end of the stream
+					};
+					expectedStream._write = function write(doc, encoding, next) {
+						var StringDecoder = require('string_decoder').StringDecoder;
+						var decoder = new StringDecoder('utf8');
+						var result = decoder.write(doc);
+						expected_output += result;
+						next()
+						// resolve(result);  // Moved the resolve to the handler, which fires at the end of the stream
+					};
+
+					function handler(error, data, container) {
+						if (error) {
+							console.log({ 'status': 'error', 'message': error });
+							reject(error)
+						}
+						//resolve(output);
+						//return output;
+					};
+
+					docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions, function(error, data, container){
+						console.log('Actual output: '+actual_output);
+
+						docker.run('test', ['/usr/local/bin/python', '/data/hello-world.py'], expectedStream, createOptions, function(error, data, container){
+							console.log('Expected output: '+expected_output);
+							var msg;
+							if(actual_output!=expected_output){
+								msg='Outputs are not the same';
+								var mark=new Mark({assignment: assignment1.id, marker: ta.id, score: 0});
+							}else{
+								msg='Outputs are the same';
+								var mark=new Mark({assignment: assignment1.id, marker: ta.id, score: 1});
+							}
+							mark.save(function(error){
+								if(error) console.log('Addition error');
+							});
+							console.log(mark.score);
+							//res.writeHead(200);
+
+							console.log('Code: ***' + actual_code + '***');
+
+							res.render('feedback', { Actual_output: 'Your code output: '+actual_output, Message: msg, Expected_output: 'Expected code output: '+expected_output, Code: actual_code });
+							return res.end();
         });
 
-        // create docker container
 
-        var createOptions = {
-          Tty: true,
-          'Binds': ['/c/Users/MrE_0/Documents/university/web-based_auto-grader-master/uploadedFiles:/data']
-        };
-
-        //run uploaded file
-
-        actualStream._write = function write(doc, encoding, next) {
-          var StringDecoder = require('string_decoder').StringDecoder;
-          var decoder = new StringDecoder('utf8');
-          var result = decoder.write(doc);
-          actual_output += result;
-          next()
-          // resolve(result);  // Moved the resolve to the handler, which fires at the end of the stream
-        };
-        expectedStream._write = function write(doc, encoding, next) {
-          var StringDecoder = require('string_decoder').StringDecoder;
-          var decoder = new StringDecoder('utf8');
-          var result = decoder.write(doc);
-          expected_output += result;
-          next()
-          // resolve(result);  // Moved the resolve to the handler, which fires at the end of the stream
-        };
-
-        function handler(error, data, container) {
-          if (error) {
-            console.log({ 'status': 'error', 'message': error });
-            reject(error)
-          }
-          //resolve(output);
-          //return output;
-        };
-
-        docker.run('test', ['/usr/local/bin/python', '/data/'+filename+'.py'], actualStream, createOptions, function(error, data, container){
-          console.log('Actual output: '+actual_output);
-
-          docker.run('test', ['/usr/local/bin/python', '/data/hello-world.py'], expectedStream, createOptions, function(error, data, container){
-            console.log('Expected output: '+expected_output);
-            var msg;
-            if(actual_output!=expected_output){
-              msg='Outputs are not the same';
-              var mark=new Mark({assignment: assignment1.id, marker: ta.id, score: 0});
-            }else{
-              msg='Outputs are the same';
-              var mark=new Mark({assignment: assignment1.id, marker: ta.id, score: 1});
-            }
-            mark.save(function(error){
-              if(error) console.log('Addition error');
-            });
-            console.log(mark.score);
-            //res.writeHead(200);
-
-						console.log('Code: ***' + actual_code + '***');
-						actual_code = 'for x in range(50):\n' +
-													'  print(x)\n' +
-						              'if (x % 2) == 0:\n' +
-													'  print("It is even!")';
-
-            res.render('feedback', { Actual_output: 'Your code output: '+actual_output, Message: msg, Expected_output: 'Expected code output: '+expected_output, Code: actual_code });
-            return res.end();
 
 
             //return container.remove();
