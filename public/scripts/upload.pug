@@ -1,0 +1,73 @@
+doctype html
+html(lang="en")
+	head
+		meta(charset="utf-8")
+		meta(name="viewpoint", content="width=device-width, initial-scale=1")
+
+		title  Gradr: Upload File
+
+		link(href="images/logo_icon.ico" rel="icon" type="image/x-icon")
+		link(href="images/logo_icon.ico" rel="shortcut icon" type="image/x-icon")
+		link(rel="icon" type="image/png" href="images/logo_icon.png" alt="icon")
+
+		link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css")
+
+		link(rel="stylesheet", href="main.css")
+
+		script(type="text/javascript", src="http://code.jquery.com/jquery-3.3.1.min.js")
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js")
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js")
+
+		script(src="scripts/fileUpload.js")
+
+	body
+		div(class="menu")
+			ul
+				li
+					a(href="grades") Grades
+				li
+					a(href="upload") Submit
+				li
+					a(href="assignments") Assignments
+
+		div(id="home", class="pimg1")
+			div(class="ptext")
+				span(id="mainTitle", class="border", uk-parallax="opacity: 0; viewport: 0.8") Upload a File
+
+		#upload_div
+			form(class="uk-form uk-form-stacked", id="uploadForm", action="/fileuploadhandle", method="post", enctype="multipart/form-data")
+				div
+					div(class="uk-form-controls")
+						label(class="uk-form-label") Select which assignment you are submitting:
+						select(id="assignmentId", class="uk-select list")
+							option(value="asmt1") Assignment 1
+							option(value="asmt2") Assignment 2
+
+				div
+					div(class="uk-form-controls")
+						label(class="uk-form-label") Select your solution file:
+						input(type="file", name="filetoupload", id="filetoupload", class="inputfile",  data-multiple-caption="{count} files selected")
+						label(for="filetoupload", class="uk-button button")
+							span Choose&hellip;
+
+				div
+					div(class="uk-form-controls")
+						button(class="uk-button button") Submit Assignment
+
+		footer(class="info")
+			div(id="contact")
+				h3 Contact
+				div 2000 Simcoe St. N.
+				div Oshawa, ON L1H 7K4
+				div 905-721-8668
+
+			div(id="social")
+				ul
+					li
+						a(href="http://science.uoit.ca")
+							img(src="images/social/web.png", alt="E-Mail")
+					li
+						a(href="https://twitter.com/randy_fortier")
+							img(src="images/social/twitter.png", alt="Twitter")
+
+		footer(id="copyright") &copy; 2018 - University of Ontario Institute of Technology

@@ -197,6 +197,8 @@ app.post("/fileuploadhandle", function(req, res){
             console.log(mark.score);
             //res.writeHead(200);
 
+						console.log('Code: ***' + actual_code + '***');
+
             res.render('feedback', { Actual_output: 'Your code output: '+actual_output, Message: msg, Expected_output: 'Expected code output: '+expected_output, Code: actual_code });
             return res.end();
 

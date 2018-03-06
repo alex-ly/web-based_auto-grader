@@ -9,6 +9,14 @@ body, html{
   color:#666;
 }
 
+/* ace text editor */
+#editor {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
 
 #home {
   display: block;
@@ -182,7 +190,7 @@ h1{
   color: white;
 }
 
-#upload_div{
+#upload_div {
   border: 1px solid #000000;
   background-color: #FFFFFF;
 }
