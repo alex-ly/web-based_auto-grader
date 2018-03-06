@@ -198,6 +198,10 @@ app.post("/fileuploadhandle", function(req, res){
             //res.writeHead(200);
 
 						console.log('Code: ***' + actual_code + '***');
+						actual_code = 'for x in range(50):\n' +
+													'  print(x)\n' +
+						              'if (x % 2) == 0:\n' +
+													'  print("It is even!")';
 
             res.render('feedback', { Actual_output: 'Your code output: '+actual_output, Message: msg, Expected_output: 'Expected code output: '+expected_output, Code: actual_code });
             return res.end();
