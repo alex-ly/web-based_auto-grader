@@ -18,6 +18,7 @@ mongoose
 stream
 mongodb
 ```
-Then, run "node main.js" in the node command prompt.
+Run `mongod` on the command line to open a Mongo daemon. 
+Then, run `node main.js` in the node command prompt.
 
 Open up an Internet browser and enter "localhost:3000" into the URL.
