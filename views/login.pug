@@ -1,0 +1,24 @@
+extends layout
+block content
+  h1 Log in
+  if (errorMessage)
+    div= errorMessage
+  form(action="/processLogin",
+       method="post",
+       class="form-horizontal")
+
+    label(class="control-label col-md-1",
+          for="username") Username:
+    div(class="col-md-4 form-group")
+      input(type="text",
+            name="username",
+            id="username",
+            placeholder="Username",
+            class="form-control")
+
+    <br />
+    <br />
+    <br />
+
+    div(class="col-md-offset-1 col-md-1")
+      button(type="submit", class="btn btn-primary") Login
