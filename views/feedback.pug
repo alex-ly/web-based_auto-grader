@@ -3,15 +3,34 @@ html(lang="en")
   head
     meta(charset="utf-8")
     meta(name="viewpoint" content="width=device-width, initial-scale=1")
-    script(src="scripts/feedback.js" type="text/javascript")
     title  Feedback
-    link(rel="stylesheet" href="main.css")
-  body
-    #wrapper
-      header
-        h1 Feedback
+    link(href="images/logo_icon.ico" rel="icon" type="image/x-icon")
+    link(href="images/logo_icon.ico" rel="shortcut icon" type="image/x-icon")
+    link(rel="icon" type="image/png" href="images/logo_icon.png" alt="icon")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css")
+    script(src="scripts/feedback.js" type="text/javascript")
+    link(rel="stylesheet" href="feedback.css")
+    script(type="text/javascript", src="http://code.jquery.com/jquery-3.3.1.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js")
 
-    div#editor= Code
+  body
+    div(class="menu")
+      ul
+        li
+          a(href="grades") Grades
+        li
+          a(href="upload") Submit
+        li
+          a(href="assignments") Assignments
+
+    div(id="home", class="pimg1")
+      div(class="ptext")
+        span(id="mainTitle", class="border", uk-parallax="opacity: 0; viewport: 0.8") Feedback
+
+    h3 Your code:
+
+    #editor= Code
 
     div
       p= Actual_output
@@ -21,7 +40,5 @@ html(lang="en")
       p= Message
 
     script(src="ace-builds-master/src-noconflict/ace.js" type="text/javascript" charset="utf-8")
-    //script.
-    //  var editor = ace.edit("editor");
-    //  editor.setTheme("../ace-master/lib/ace/theme/monokai");
-    //  editor.session.setMode("../ace-master/lib/ace/mode/javascript");
+
+    
