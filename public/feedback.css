@@ -1,0 +1,153 @@
+/* general styling */
+body, html{
+  height: 100%;
+  margin:0;
+  font-size:90%;
+  font-family:"Lato", sans-serif;
+  font-weight:400;
+  line-height:1.8em;
+  color:#666;
+}
+
+
+#home {
+  display: block;
+}
+
+.pimg1 {
+  position:relative;
+  opacity:1.0;
+  background-image:url('../images/background.png');
+  background-position:left;
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+  background-color: rgba(0, 0, 0, 0.25);
+  background-blend-mode: multiply;
+  min-height:50%;
+}
+
+.ptext {
+  position:absolute;
+  top:50%;
+  width:100%;
+  text-align:center;
+  color:#000;
+  font-size:150%;
+  letter-spacing:.2rem;
+  text-transform:uppercase;
+}
+
+.ptext .border {
+  background-color:#282e34;
+  color:#fff;
+  padding:20px;
+}
+
+/* menu */
+.menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 5;
+  margin: 0;
+  padding: 1rem;
+  padding-bottom: 1.5rem;
+  width: 100%;
+  background-color:#282e34;
+}
+
+.menu li {
+  display: inline-block;
+  float: right;
+  margin-right: 3rem;
+}
+
+.menu li > a {
+  color: #E0E0E0;
+  text-decoration: none;
+  font-size: 120%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.menu li > a:hover {
+  color: #FFFFFF;
+  background-color: #101010;
+}
+
+
+
+.list {
+  width: 30rem;
+}
+
+/* footer */
+footer {
+  padding-left: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 80%;
+  background-color: black;
+  color: #b0b0b0;
+}
+
+footer h3 {
+  color: #d0d0d0;
+}
+
+footer.info {
+  height: 150px;
+}
+
+#contact {
+  float: left;
+}
+
+#social {
+  float: right;
+  padding-right: 2rem;
+}
+
+#social li {
+  display: inline-block;
+}
+
+#social img {
+  width: 3rem;
+  height: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+#copyright {
+  clear: both;
+  text-align: center;
+  padding-left: 0;
+}
+
+/* header/nav */
+body > div > header{/* > means directly below. without it, it's eventually below*/
+  background-color: #8D177B;
+  height: 180px;
+  padding: 5px;
+}
+
+h1{
+  color: white;
+}
+
+
+#editor {
+  /*position: absolute;
+  //top: 1;
+  //right: 0;
+  //bottom: 2;
+  //left: 0;*/
+  position: relative;
+
+  height: 300px;
+  width: full-width;
+}
